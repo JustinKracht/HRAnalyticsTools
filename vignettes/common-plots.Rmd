@@ -1,0 +1,68 @@
+---
+title: "Common GMI Plot Types"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{common-plots}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(HRAnalyticsTools)
+library(tidyverse)
+library(prismatic)
+library(crayon)
+library(palmerpenguins)
+```
+
+# Theming
+
+The theme you prefer to use is a personal choice --- I prefer `theme_minimal()` and sometimes `theme_bw()`, with customizations that make them integrate better with the GMI PowerPoint templates. For instance, I think it looks nice to have the plot font face match the default PowerPoint text font face (Segoe UI). You can do this using the `grDevices` package:
+
+```{r, fig.height = 2, fig.width = 4}
+# Set the default sans serif font face to be Segoe UI (only for the current
+# session)
+grDevices::windowsFonts(sans = "Segoe UI") # Default is Arial
+
+# Set the default ggplot theme to theme_minimal()
+theme_set(theme_minimal())
+
+# See the colors that are available in the GMI color palette
+plot(prismatic::color(gmi_cols(1:7)))
+```
+
+You'll see some of the other changes I like to make in the following examples. For instance, I often find it helpful to have the legend moved to the bottom, rather than on the side (because vertical space is often more available than horizontal space on my slides). I also like to use custom color palettes that correspond to the corporate brand colors. Note that these color palettes might not work well when there are many categories and that it can be difficult to distinguish between these colors for people with certain types of colorblindness.  
+
+# Bar plots
+
+```{r fig.height = 3, fig.width = 7}
+# Count the number of each species of penguin
+species_count <- penguins %>%
+  count(species)
+  
+ggplot(species_count, aes(x = species, y = n)) +
+  # Set the bar color
+  geom_col(fill = gmi_cols(2)) +
+  # Flip the plot to be horizontal
+  coord_flip() +
+  # Add counts to the right of each bar
+  geom_text(aes(label = n), nudge_y = 5) +
+  # Label x and y axes; sometimes a line break after a label can be a useful
+  # (albeit hacky) way to make spacing nicer.
+  labs(title = "Number of each Penguin Species", 
+       x = "Species\n", 
+       y = "Count",
+       caption = "Note. Sometimes a note is helpful to call out something.") +
+  # Remove horizontal grid lines
+  theme(panel.grid.major.y = element_blank(),
+        # Remove axis tick labels since columns are labeled with the counts
+        axis.text.x = element_blank())
+```
+
