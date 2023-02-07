@@ -7,6 +7,10 @@
 recode_management_level <- function(management_level, collapse_officer = TRUE) {
   management_level <- forcats::fct_relevel(
     management_level,
+    "Other",
+    "Retail",
+    "Production",
+
     "Support",
     "Specialized Support",
     "Experienced Support",
