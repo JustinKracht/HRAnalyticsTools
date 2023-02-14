@@ -4,8 +4,6 @@
 #'
 #' @return A numeric vector of performance ratings on the 1-3 scale.
 #' @export
-#'
-#' @examples
 recode_performance_rating <- function(performance_rating) {
   performance_rating <- performance_rating |>
     str_remove("[:punct:]+") |>
